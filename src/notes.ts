@@ -166,4 +166,114 @@ sumorminus=(numOne:number, numTwo:number,sign:string)=>{ //parameter aliases do 
 console.log(sumorminus(1,3,"add"))
 console.log(sumorminus(1,3,"minus"))
 console.log(sumorminus(1,3,"atsdhs"))
+ 
+//GENERICS -- reusable code block that can be used with types
+const randomId = (obj:object)=>{
+     let uid=Math.floor(Math.random()*100)
+    return {...obj, uid} //returns the object parts destructured elements plus a new uid index
+}
 
+let myIdwithrandomid= randomId({name:"Iyvone", age:18, skills:"The most you'll ever hear of"})
+console.log(myIdwithrandomid) //at this instance it is impossible to access the specific properties of the object...myidwithrandomid.name gives an error
+//the error is because the object type specifiied in the parameter is an object, withoust specifying the props in it. at this juncture, the properties are still unknown
+//generics  are used to replace the type of the parameter parsed--add <T>(parameter:T)=>{}
+
+//the generioc capture the properties in the parameter,allowing recalls
+const randomId2 = <T>(obj:T)=>{
+    let uid=Math.floor(Math.random()*100)
+   return {...obj, uid} //returns the object parts destructured elements plus a new uid index
+}
+
+let mygenericrandomid= randomId2({name:"Iyvone", age:18, skills:"The most you'll ever hear of"})
+console.log(myIdwithrandomid)
+console.log(mygenericrandomid.name)//the properties are captured by the T generic and can be accessed considering the type T is generic
+
+//however, this degrades strong typing, allowing paraemter type changes. in case below the paremeter is a string and will still get a random is
+
+let mygenericrandomid2=   randomId2('Hello')
+console.log(mygenericrandomid2) //it destructures hello to form an object and adds id to it
+
+//to specify the parameter type, without losing the ability to retract the properties
+const randomId3= <T extends object>(obj:T)=>{ //withou necessarily saying it delas with an object, we just expand the object and thsu it means the parameter must firts be an object
+    let uid=Math.floor(Math.random()*100)
+   return {...obj, uid} //returns the object parts destructured elements plus a new uid index
+}
+
+let mygenericparameterspscificrandomid3= randomId3({name:'Iyvone', age:'18'})
+console.log(mygenericparameterspscificrandomid3)
+
+//we can specify the type of object parameters to be parsed by replacing the object extension to the actual properties to be expected
+
+const randomId4 = <T extends{name:string, age:number, skillset:string}>(obj:T)=>{
+    let uid=Math.floor(Math.random()*100)
+   return {...obj, uid} //returns the object parts destructured elements plus a new uid index
+}
+
+let objectwithgenericidforobjectdefinition= randomId4({name:"Iyvone", age:18, skillset:"The most you'll ever hear of"})
+console.log(objectwithgenericidforobjectdefinition)
+console.log(objectwithgenericidforobjectdefinition.skillset)
+
+//GENERICS WITH INTERFACES (whish describe how an object should look like)
+
+interface resource<T>{
+    uid:number;
+    resourceName:string;
+    data:T
+}//making a property generic in an interface, pass the generic sign before the interface name, thenplacing the t to whatever property you want to capture
+
+const resourceinstance0: resource<string>={ //T was generic, so we can chnage it to suit the cutomized instance
+    uid:1,
+    resourceName:'John Olsen',
+    data:'can be anything--generic'
+    }
+    
+    const resourceinstance2: resource<[string]>={ //T was generic, so we can chnage it to suit the cutomized instance
+        uid:2,
+        resourceName:'Candace Owens',
+        data:['anything, i mean']
+        }
+
+interface resource1{
+    uid:number;
+    resourceName:string;
+    data:object
+}//without the generic factor, assigning the interfce to an object will restrict customizing the properties
+const resourceinstance: resource1={
+uid:4,
+resourceName:'Shapiro',
+data:{} //changing this to any other data form creates an error
+}
+
+
+//ENUMS--Allow storage of a set of contsnts that can be associated with anumeric value
+ 
+enum ResourceType{Book, Author, Film, Director, Person} //this list of const can be used as the type for the resource type in the reosirce interface
+
+
+interface enumThing<T>{
+ uid:number,
+ name:string,
+ data:T
+ resourceType:ResourceType //later on, you can call the enum.all elements and choose the one to customize an instance with
+}
+const enumThingInstance1:enumThing<string>={
+ uid:34,
+ name:'John Cena',   
+ data:"Won against A.J styles",//T was specified in the instance as a string
+ resourceType:ResourceType.Author      //--this numeric const can be 
+}
+console.log(enumThingInstance1) //logs the index for the .author
+
+//TUPLES -prevent type changes in flexible variables
+
+let arr=['ryu', 34, true] //its flexible thus all the below code can be run--type changes
+arr[0]=false
+arr[1]='Yoshi'
+arr[2]=60
+
+//defining positions with tuples, ensuring any changes remains within the data type
+ let tup:[string, number, boolean]=['Hey', 34, true] //limits that any array with the tupple follows the order provided. the tup :[contains the tupple:chronology]
+tup[0]='can only take up a tring as the position is defined, as in the examples below'
+tup[1]=23
+tup[2]=false//changes the tup considerintg the order has been respected
+console.log(tup)
