@@ -190,7 +190,7 @@ console.log(mygenericrandomid.name)//the properties are captured by the T generi
 
 //however, this degrades strong typing, allowing paraemter type changes. in case below the paremeter is a string and will still get a random is
 
-let mygenericrandomid2=   randomId2('Hello')
+let mygenericrandomid2= randomId2('Hello')
 console.log(mygenericrandomid2) //it destructures hello to form an object and adds id to it
 
 //to specify the parameter type, without losing the ability to retract the properties
